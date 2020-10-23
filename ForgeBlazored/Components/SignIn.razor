@@ -1,0 +1,55 @@
+﻿@page "/signin"
+@page "/api/forge/callback/oauth"
+
+@inject NavigationManager navigationManager
+@inject ITokenManager tokenManager
+@inject ConfigurationManager configurationManager
+
+@if (tokenManager.Configured)
+{
+<div>
+    @if (_user != null)
+    {
+        <img src="@_user.profileImages.sizeX40" class="rounded-circle"/>
+    }
+    <RadzenButton Text="Sign Out" Click="GotoSignOut" ButtonStyle="ButtonStyle.Secondary" />
+</div>
+}
+else
+{
+    <RadzenButton Text="Sign In" Click="GotoSignIn" Icon="account_circle" ButtonStyle="ButtonStyle.Primary"/>
+    @*<div><a class="btn btn-primary" @onclick="GotoSignIn">Sign In</a></div>*@
+}
+
+@code {
+    private Token _token;
+    private ForgeUser _user;
+    protected override async Task OnInitializedAsync()
+    {
+        if (tokenManager.Configured)
+        {
+            _token = await tokenManager.GetAccessToken();
+            _user = await tokenManager.GetForgeUser(_token.AccessToken);
+        }
+        else if (navigationManager.Uri.Contains("/api"))
+        {
+            var code = new Uri(navigationManager.Uri, UriKind.Absolute).Query.Split('=')[1];
+            await tokenManager.Configure(code);
+            navigationManager.NavigateTo("/forge");
+        }
+    }
+
+    private void GotoSignIn()
+    {
+        navigationManager.NavigateTo(configurationManager.AuthorizeUrlCode.AbsoluteUri);
+    }
+
+    private void GotoSignOut()
+    {
+        tokenManager.Configured = false;
+        navigationManager.NavigateTo("/");
+    }
+}
+
+
+

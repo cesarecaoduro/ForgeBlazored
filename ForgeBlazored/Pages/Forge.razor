@@ -1,0 +1,36 @@
+﻿@page "/forge"
+
+@inject NavigationManager navigationManager
+@inject ITokenManager tokenManager
+@inject ConfigurationManager configurationManager
+
+<h3>Forge</h3>
+
+@if (_user != null)
+{
+<div>
+    <div class="form-group">
+        <label for="accessToken">First Name</label>
+        <textarea id="accessToken" class="text-dark" readonly>@_user.firstName</textarea>
+    </div>
+    <div class="form-group">
+        <label for="accessToken">Last Name</label>
+        <textarea id="accessToken" class="form-control z-depth-1" readonly>@_user.lastName</textarea>
+    </div>
+</div>
+}
+
+@code {
+    private Token _token;
+    private ForgeUser _user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (tokenManager.Configured)
+        {
+            _token = await tokenManager.GetAccessToken();
+            _user = await tokenManager.GetForgeUser(_token.AccessToken);
+        }
+    }
+
+}
