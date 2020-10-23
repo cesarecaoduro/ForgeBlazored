@@ -9,14 +9,17 @@
 @if (_user != null)
 {
 <div>
-    <div class="form-group">
-        <label for="accessToken">First Name</label>
-        <textarea id="accessToken" class="text-dark" readonly>@_user.firstName</textarea>
-    </div>
-    <div class="form-group">
-        <label for="accessToken">Last Name</label>
-        <textarea id="accessToken" class="form-control z-depth-1" readonly>@_user.lastName</textarea>
-    </div>
+    <h3>First name</h3>
+    <RadzenTextBox Value="@_user.firstName" Disabled="true"/>
+    <h3>Last name</h3>
+    <RadzenTextBox Value="@_user.lastName" Disabled="true" />
+    <h3>Email</h3>
+    <RadzenTextBox Value="@_user.emailId" Disabled="true" />
+    <h3>Token</h3>
+    <RadzenTextArea Value="@_token.AccessToken" Disabled="true" Cols="80" Rows="10"/>
+    <h3>Experies on</h3>
+    <RadzenDatePicker @bind-Value="@_token.ExpiresOn" Disabled="true" />
+
 </div>
 }
 
